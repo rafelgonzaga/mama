@@ -82,18 +82,13 @@
 <div id="status"></div>
 
 <script>
-// Google Drive file IDs
-const DRIVE_IDS = [
-  "1zB90liQpd7VnsjgWPTblrsHYxeuzdxzd",
-  "1rf8QCaktzqQni--HtMkomyrI8U1ZN1oa",
-  "10OSr5-NAphuYO9pSWWSZswfIG3lUvLbW",
-  "1mXE8l1zYVsKpCc0_iuYsU6CHTh05KtdZ"
+// Photos from GitHub repo
+const PHOTOS = [
+  "https://raw.githubusercontent.com/rafelgonzaga/mama/main/Image%20(1).jpeg",
+  "https://raw.githubusercontent.com/rafelgonzaga/mama/main/ClioSports.jpg",
+  "https://raw.githubusercontent.com/rafelgonzaga/mama/main/Rafa_Gonzaga.png",
+  "https://raw.githubusercontent.com/rafelgonzaga/mama/main/Rafael%20Gonzaga.png"
 ];
-
-// Use Imgix to load from Google Drive
-const PHOTOS = DRIVE_IDS.map(id => 
-  `https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=AIzaSyDyWJOw5w-1czz1zNHc1xoYe5cTzMMQcfk`
-);
 
 const SECONDS_PER_PHOTO = 8;
 const SHUFFLE = true;
