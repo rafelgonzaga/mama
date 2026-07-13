@@ -70,11 +70,37 @@
     opacity: 0;
     pointer-events: none;
   }
+
+  #fullscreenBtn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    padding: 30px 60px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    border: 3px solid white;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  #fullscreenBtn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  #fullscreenBtn.hidden {
+    display: none;
+  }
 </style>
 </head>
 <body>
 
 <div id="stage"></div>
+
+<button id="fullscreenBtn">TAP FOR FULLSCREEN</button>
 
 <div id="overlay">
   <div id="clock">--:--</div>
@@ -99,6 +125,7 @@ const stage = document.getElementById('stage');
 const clockEl = document.getElementById('clock');
 const dateEl = document.getElementById('date');
 const statusEl = document.getElementById('status');
+const fullscreenBtn = document.getElementById('fullscreenBtn');
 
 let order = [];
 let idx = 0;
@@ -174,34 +201,23 @@ window.addEventListener('beforeunload', () => {
   clearTimeout(showNextTimeout);
 });
 
-// Request fullscreen for Meta Quest/Portal
-async function requestFullscreen() {
+// Fullscreen handler
+fullscreenBtn.addEventListener('click', async () => {
   try {
-    // Try modern fullscreen API
     if (document.documentElement.requestFullscreen) {
-      await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
-      setStatus("✓ Fullscreen ativado", 2000);
-    } 
-    // Try webkit fullscreen for older browsers
-    else if (document.documentElement.webkitRequestFullscreen) {
-      await document.documentElement.webkitRequestFullscreen();
-      setStatus("✓ Fullscreen ativado", 2000);
+      await document.documentElement.requestFullscreen();
+      fullscreenBtn.classList.add('hidden');
+      setStatus("✓ Fullscreen", 2000);
     }
   } catch (err) {
-    console.log('Fullscreen request failed:', err.message);
+    setStatus("Fullscreen não suportado", 2000);
   }
-}
+});
 
-// Request fullscreen on click or page load
-document.addEventListener('click', requestFullscreen);
-window.addEventListener('load', requestFullscreen);
-
-// Exit fullscreen on Escape
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    }
+// Hide button if user exits fullscreen
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) {
+    fullscreenBtn.classList.remove('hidden');
   }
 });
 
