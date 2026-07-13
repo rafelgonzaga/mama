@@ -172,6 +172,21 @@ window.addEventListener('beforeunload', () => {
   clearTimeout(showNextTimeout);
 });
 
+// Request fullscreen on any user interaction
+document.addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      console.log('Fullscreen request failed:', err.message);
+    });
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.fullscreenElement) {
+    document.exitFullscreen();
+  }
+});
+
 // Initialize
 setStatus(`✓ Carregadas ${PHOTOS.length} fotos`, 2000);
 order = [...PHOTOS.keys()];
