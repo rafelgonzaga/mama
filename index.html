@@ -96,7 +96,7 @@
 /* =========================================================
    GOOGLE DRIVE INTEGRATION
    ========================================================= */
-const DRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby09U3wwNxVknFRz24htD2_jwU6wFnBfXxlACvsXyKTW4nu8duQSGric1tCofRIL9rl/exec";
+const DRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfgFf79eicjRkG7mWoPdDcSaKyexx1pvTw9vkAywHV0CxA2IBB68oPytRH9b3k1jZZ/exec";
   
 // Segundos que cada foto fica na tela
 const SECONDS_PER_PHOTO = 8;
@@ -142,15 +142,31 @@ function setStatus(message, duration = 3000) {
 async function loadPhotosFromGoogleDrive() {
   try {
     setStatus("Carregando fotos do Drive...", 0);
-    const response = await fetch(DRIVE_SCRIPT_URL);
-    PHOTOS = await response.json();
     
-    if (!Array.isArray(PHOTOS) || PHOTOS.length === 0) {
-      throw new Error("Nenhuma foto encontrada");
-    }
-    
-    setStatus(`✓ Carregadas ${PHOTOS.length} fotos`, 2000);
-    initializeSlideshow();
+    // Use JSONP to bypass CORS
+    return new Promise((resolve, reject) => {
+      window.photosCallback = function(data) {
+        PHOTOS = data;
+        
+        if (!Array.isArray(PHOTOS) || PHOTOS.length === 0) {
+          throw new Error("Nenhuma foto encontrada");
+        }
+        
+        setStatus(`✓ Carregadas ${PHOTOS.length} fotos`, 2000);
+        initializeSlideshow();
+        resolve();
+      };
+      
+      const script = document.createElement('script');
+      script.src = DRIVE_SCRIPT_URL + "?callback=photosCallback";
+      script.onerror = () => {
+        setStatus("✗ Erro ao carregar fotos", 0);
+        errorBox.style.display = 'flex';
+        console.error("Drive error: Failed to load script");
+        reject(new Error("Failed to load script"));
+      };
+      document.head.appendChild(script);
+    });
   } catch (err) {
     setStatus("✗ Erro ao carregar fotos", 0);
     errorBox.style.display = 'flex';
