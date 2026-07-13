@@ -94,10 +94,16 @@
 
 <script>
 /* =========================================================
-   GOOGLE DRIVE INTEGRATION
+   PHOTOS - Hardcoded from Google Drive
    ========================================================= */
-const DRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfgFf79eicjRkG7mWoPdDcSaKyexx1pvTw9vkAywHV0CxA2IBB68oPytRH9b3k1jZZ/exec";
-  
+
+const PHOTOS = [
+  "https://drive.google.com/uc?export=view&id=1zB90liQpd7VnsjgWPTblrsHYxeuzdxzd",
+  "https://drive.google.com/uc?export=view&id=1rf8QCaktzqQni--HtMkomyrI8U1ZN1oa",
+  "https://drive.google.com/uc?export=view&id=10OSr5-NAphuYO9pSWWSZswfIG3lUvLbW",
+  "https://drive.google.com/uc?export=view&id=1mXE8l1zYVsKpCc0_iuYsU6CHTh05KtdZ"
+];
+
 // Segundos que cada foto fica na tela
 const SECONDS_PER_PHOTO = 8;
 
@@ -112,7 +118,6 @@ const dateEl = document.getElementById('date');
 const statusEl = document.getElementById('status');
 const errorBox = document.getElementById('errorBox');
 
-let PHOTOS = [];
 let order = [];
 let idx = 0;
 let currentEl = null;
@@ -139,42 +144,9 @@ function setStatus(message, duration = 3000) {
   }
 }
 
-async function loadPhotosFromGoogleDrive() {
-  try {
-    setStatus("Carregando fotos do Drive...", 0);
-    
-    // Use JSONP to bypass CORS
-    return new Promise((resolve, reject) => {
-      window.photosCallback = function(data) {
-        PHOTOS = data;
-        
-        if (!Array.isArray(PHOTOS) || PHOTOS.length === 0) {
-          throw new Error("Nenhuma foto encontrada");
-        }
-        
-        setStatus(`✓ Carregadas ${PHOTOS.length} fotos`, 2000);
-        initializeSlideshow();
-        resolve();
-      };
-      
-      const script = document.createElement('script');
-      script.src = DRIVE_SCRIPT_URL + "?callback=photosCallback";
-      script.onerror = () => {
-        setStatus("✗ Erro ao carregar fotos", 0);
-        errorBox.style.display = 'flex';
-        console.error("Drive error: Failed to load script");
-        reject(new Error("Failed to load script"));
-      };
-      document.head.appendChild(script);
-    });
-  } catch (err) {
-    setStatus("✗ Erro ao carregar fotos", 0);
-    errorBox.style.display = 'flex';
-    console.error("Drive error:", err);
-  }
-}
-
 function initializeSlideshow() {
+  setStatus(`✓ Carregadas ${PHOTOS.length} fotos`, 2000);
+  
   order = [...PHOTOS.keys()];
   if (SHUFFLE) {
     for (let i = order.length - 1; i > 0; i--) {
@@ -269,8 +241,8 @@ window.addEventListener('beforeunload', () => {
   clearTimeout(showNextTimeout);
 });
 
-// Início - carregar fotos do Google Drive
-loadPhotosFromGoogleDrive();
+// Início - inicializar slideshow
+initializeSlideshow();
 </script>
 </body>
 </html>
