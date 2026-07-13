@@ -36,11 +36,6 @@
   .slide.active { opacity: 1; z-index: 2; }
   .slide.prev { opacity: 0; z-index: 1; }
 
-  @keyframes kenburns {
-    0%   { transform: scale(1.0); }
-    100% { transform: scale(1.08); }
-  }
-
   .slide.active img {
     animation: kenburns 14s ease-in-out forwards;
   }
@@ -83,10 +78,10 @@
 
 <script>
 const PHOTOS = [
-  "https://drive.google.com/uc?export=view&id=1zB90liQpd7VnsjgWPTblrsHYxeuzdxzd",
-  "https://drive.google.com/uc?export=view&id=1rf8QCaktzqQni--HtMkomyrI8U1ZN1oa",
-  "https://drive.google.com/uc?export=view&id=10OSr5-NAphuYO9pSWWSZswfIG3lUvLbW",
-  "https://drive.google.com/uc?export=view&id=1mXE8l1zYVsKpCc0_iuYsU6CHTh05KtdZ"
+  "https://drive.google.com/uc?export=download&id=1zB90liQpd7VnsjgWPTblrsHYxeuzdxzd",
+  "https://drive.google.com/uc?export=download&id=1rf8QCaktzqQni--HtMkomyrI8U1ZN1oa",
+  "https://drive.google.com/uc?export=download&id=10OSr5-NAphuYO9pSWWSZswfIG3lUvLbW",
+  "https://drive.google.com/uc?export=download&id=1mXE8l1zYVsKpCc0_iuYsU6CHTh05KtdZ"
 ];
 
 const SECONDS_PER_PHOTO = 8;
@@ -123,6 +118,7 @@ function showNext() {
   const img = document.createElement('img');
   img.src = url;
   img.alt = 'Photo';
+  img.crossOrigin = 'anonymous';
   el.appendChild(img);
   
   stage.appendChild(el);
