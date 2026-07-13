@@ -40,6 +40,11 @@
     animation: kenburns 14s ease-in-out forwards;
   }
 
+  @keyframes kenburns {
+    0%   { transform: scale(1.0); }
+    100% { transform: scale(1.08); }
+  }
+
   #overlay {
     position: absolute;
     left: 32px; bottom: 28px;
@@ -77,12 +82,20 @@
 <div id="status"></div>
 
 <script>
-const PHOTOS = [
-  "https://drive.google.com/uc?export=download&id=1zB90liQpd7VnsjgWPTblrsHYxeuzdxzd",
-  "https://drive.google.com/uc?export=download&id=1rf8QCaktzqQni--HtMkomyrI8U1ZN1oa",
-  "https://drive.google.com/uc?export=download&id=10OSr5-NAphuYO9pSWWSZswfIG3lUvLbW",
-  "https://drive.google.com/uc?export=download&id=1mXE8l1zYVsKpCc0_iuYsU6CHTh05KtdZ"
+// Google Drive file IDs
+const DRIVE_IDS = [
+  "1zB90liQpd7VnsjgWPTblrsHYxeuzdxzd",
+  "1rf8QCaktzqQni--HtMkomyrI8U1ZN1oa",
+  "10OSr5-NAphuYO9pSWWSZswfIG3lUvLbW",
+  "1mXE8l1zYVsKpCc0_iuYsU6CHTh05KtdZ"
 ];
+
+// CORS proxy
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+
+const PHOTOS = DRIVE_IDS.map(id => 
+  CORS_PROXY + "https://drive.google.com/uc?export=view&id=" + id
+);
 
 const SECONDS_PER_PHOTO = 8;
 const SHUFFLE = true;
@@ -118,7 +131,6 @@ function showNext() {
   const img = document.createElement('img');
   img.src = url;
   img.alt = 'Photo';
-  img.crossOrigin = 'anonymous';
   el.appendChild(img);
   
   stage.appendChild(el);
