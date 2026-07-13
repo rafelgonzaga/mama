@@ -2,7 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Portal Slideshow</title>
 <style>
   :root {
@@ -172,18 +174,20 @@ window.addEventListener('beforeunload', () => {
   clearTimeout(showNextTimeout);
 });
 
-// Request fullscreen on any user interaction
-document.addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(err => {
-      console.log('Fullscreen request failed:', err.message);
-    });
-  }
+// Hide browser UI on Safari
+window.addEventListener('load', () => {
+  window.scrollTo(0, 1);
+  setTimeout(() => {
+    window.scrollTo(0, 1);
+  }, 100);
 });
 
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.fullscreenElement) {
-    document.exitFullscreen();
+// Request fullscreen for other browsers
+document.addEventListener('click', () => {
+  if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      console.log('Fullscreen not available:', err.message);
+    });
   }
 });
 
