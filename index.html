@@ -174,20 +174,34 @@ window.addEventListener('beforeunload', () => {
   clearTimeout(showNextTimeout);
 });
 
-// Hide browser UI on Safari
-window.addEventListener('load', () => {
-  window.scrollTo(0, 1);
-  setTimeout(() => {
-    window.scrollTo(0, 1);
-  }, 100);
-});
+// Request fullscreen for Meta Quest/Portal
+async function requestFullscreen() {
+  try {
+    // Try modern fullscreen API
+    if (document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+      setStatus("✓ Fullscreen ativado", 2000);
+    } 
+    // Try webkit fullscreen for older browsers
+    else if (document.documentElement.webkitRequestFullscreen) {
+      await document.documentElement.webkitRequestFullscreen();
+      setStatus("✓ Fullscreen ativado", 2000);
+    }
+  } catch (err) {
+    console.log('Fullscreen request failed:', err.message);
+  }
+}
 
-// Request fullscreen for other browsers
-document.addEventListener('click', () => {
-  if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(err => {
-      console.log('Fullscreen not available:', err.message);
-    });
+// Request fullscreen on click or page load
+document.addEventListener('click', requestFullscreen);
+window.addEventListener('load', requestFullscreen);
+
+// Exit fullscreen on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
   }
 });
 
