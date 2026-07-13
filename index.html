@@ -90,11 +90,9 @@ const DRIVE_IDS = [
   "1mXE8l1zYVsKpCc0_iuYsU6CHTh05KtdZ"
 ];
 
-// CORS proxy
-const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
-
+// Use Imgix to load from Google Drive
 const PHOTOS = DRIVE_IDS.map(id => 
-  CORS_PROXY + "https://drive.google.com/uc?export=view&id=" + id
+  `https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=AIzaSyDyWJOw5w-1czz1zNHc1xoYe5cTzMMQcfk`
 );
 
 const SECONDS_PER_PHOTO = 8;
